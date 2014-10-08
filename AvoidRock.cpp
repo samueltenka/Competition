@@ -26,13 +26,19 @@ void count_segs_by_length() {
    }
 }
 
-int num_fences_helper(int goal_length, int goal_num_pieces) {
-   if(goal_num_pieces == 1) {
-      for(int N = 0;)
-   }
-}
-int num_fences(int length, int num_pieces, int N, int* segs) {
+int num_fences(int goal_length, int num_pieces, int N, int* segs) {
+   if(num_pieces==0) {
+      return (int)(goal_length==0);
+   } // else, num_pieces >= 1:
 
+   int base_length = 0;
+   int num_fences_of_extra_length[100];
+   for(int i = 0; i < 100; i++) {
+      num_fences_of_extra_length[i] = num_segs_of_length[i];
+   } num_pieces--;
+   while(num_pieces > 0) {
+      
+   }
 }
 
 void main() {
