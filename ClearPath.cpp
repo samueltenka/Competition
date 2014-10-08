@@ -5,22 +5,30 @@ using namespace std;
 #define MIN(A, B) ((A)<(B) ? (A) : (B))
 
 int M, N;
-int** heights;
+int heights[5][5] = {{1, 1, 1, 1, 1},
+                 {9, 9, 9, 9, 1},
+                 {1, 3, 3, 3, 1}, 
+                 {1, 9, 9, 9, 9},
+                 {1, 1, 1, 1, 1}};
 int** times; // time to clear all cells on best path up to, 
                     // but not including, [i][j].
 int** new_array() {
    int** arr = new int*[M];
    for(int i = 0; i < M; i++) {
       arr[i] = new int[N];
-   }
-} void init_arrays() {
-   cin >> M, N;
+   } return arr;
+} void get_heights() {
    for(int i = 0; i < M; i++) {
       for(int j = 0; j < N; j++) {
-         cin >> heights[i][j]; 
-         times[i][j] = TIME_BOUND;
+         cin >> heights[i][j];
       }
    }
+} void init_times() {
+   for(int i = 0; i < M; i++) {
+      for(int j = 0; j < N; j++) {
+         times[i][j] = TIME_BOUND;
+      }
+   } times[0][0] = 0; // crucial!
 } void delete_array(int** arr) {
    for(int i = 0; i < M; i++) {
       delete arr[i];
@@ -30,41 +38,62 @@ int** new_array() {
 
 /* Strategy: dynamic programming :)
 */
-int get_cost_of_clearing(int i, int j) {
+int get_cost_thru(int i, int j) {
    if(!(0<=i && i<M && 0<=j && j<N)) {
       return TIME_BOUND;
-   } heights[i][j] - 1; // since want to level to 1.
+   } return (heights[i][j]-1) + times[i][j]; // since want to level to 1.
 }
 int revised_time(int i, int j) {
    int min = times[i][j];
-   for(int y = i-1; y < i+1; y++) {
-      for(int x = j-1; x < j+1; x++) {
+   for(int y = i-1; y <= i+1; y++) {
+      for(int x = j-1; x <= j+1; x++) {
          if((x+y)%2==0) {continue;} // neat way of getting only orthogonal neighbors.
-         int cost = get_cost_of_clearing(x, y) + times[x][y];
+         int cost = get_cost_thru(x, y);
+         //cout << cost << ".";
          min = MIN(min, cost);
       }
-   } return min;
+   } /*cout << endl;*/ return min;
 }
-bool update_times() { // returns whether or not changed anything
+bool update_times() { // returns whether or not anything changed
    bool changed = false;
    for(int i = 0; i < M; i++) {
       for(int j = 0; j < N; j++) {
          int old = times[i][j];
          times[i][j] = revised_time(i, j);
-         if(old != times[i][j]) {
-            changed = true;
-         }
+         changed = changed || (old != times[i][j]);
       }
    } return changed;
 }
+void print() {
+   for(int i = 0; i < M; i++) {
+      for(int j = 0; j < N; j++) {
+         cout << times[i][j] << "\t";
+      } cout << endl;
+   } cout << endl;
+   for(int i = 0; i < M; i++) {
+      for(int j = 0; j < N; j++) {
+         cout << heights[i][j] << "\t";
+      } cout << endl;
+   } cout << endl;
+}
+int find_best_time() {
+   while(update_times()) {
+      cout << "!" << endl;
+      print();
+   } return get_cost_thru(M-1, N-1);;
+}
 
 void main() {
-   heights = new_array();
+   cin >> M >> N;
+   //heights = new_array();
    times = new_array();
-   init_arrays();
+   //get_heights();
+   init_times();
 
-   cout << heights[M-1][N-1];
+   cout << find_best_time();
 
    delete_array(times);
-   delete_array(heights);
+   //delete_array(heights);
+
+   cin >> M;
 }
