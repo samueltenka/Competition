@@ -11,7 +11,8 @@ void new_heights() {
       heights[i] = new int[N];
    }
 } void get_heights() {
-   for(int i = 0; i < N; i++) {
+   cin >> M, N;
+   for(int i = 0; i < M; i++) {
       for(int j = 0; j < N; j++) {
          cin >> heights[i][j];
       }
@@ -23,11 +24,14 @@ void new_heights() {
    delete[] heights;
 }
 
+void fill_heights() {
+
+} // Strategy: dynamic programming :)
+
 void main() {
-   int M, N;
-   cin >> M, N;
-   int* cards = new int[N];
-   get_cards(N, cards);
-   cout << count_flips(N, cards);
-   delete[] cards;
-} // TODO: find clever way!
+   new_heights();
+   get_heights();
+   fill_heights();
+   cout << heights[M-1][N-1];
+   delete_heights();
+}
