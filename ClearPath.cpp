@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 
+#define TIME_BOUND (100*100*100)
 #define MIN(A, B) ((A)<(B) ? (A) : (B))
 
 int M, N;
@@ -16,7 +17,7 @@ int** new_array() {
    for(int i = 0; i < M; i++) {
       for(int j = 0; j < N; j++) {
          cin >> heights[i][j]; 
-         travel_times[i][j] = 101;
+         travel_times[i][j] = TIME_BOUND+1;
       }
    }
 } void delete_array(int** arr) {
@@ -26,13 +27,25 @@ int** new_array() {
    delete[] arr;
 }
 
-void revised_time(int i, int j) {
-   return 
+int get_cost(int i, int j) {
+   if(!(0<=i && i<M && 0<=j && j<N)) {
+      return TIME_BOUND;
+   } return travel_times[i][j]; 
+   heights[i][j] - 1; // since want to level to 1.
+}
+int revised_time(int i, int j) {
+   int min = travel_times[i][j];
+   for(int y = i-1; y < i+1; y++) {
+      for(int x = j-1; x < j+1; x++) {
+         int cost = get_cost(x, y);
+         min = MIN(min, cost);
+      }
+   } return min;
 }
 void fill_() {
    for(int i = 0; i < M; i++) {
       for(int j = 0; j < N; j++) {
-         cin >> heights[i][j];
+         travel_times[i][j] = revised_time(i, j);
       }
    }
 } // Strategy: dynamic programming :)
